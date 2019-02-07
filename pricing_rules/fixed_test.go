@@ -4,6 +4,7 @@ import (
 	. "github.com/46bit/checkout/pricing_rules"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
+	"testing/quick"
 )
 
 var _ = Describe("Fixed", func() {
@@ -29,9 +30,13 @@ var _ = Describe("Fixed", func() {
 			Expect(price).To(Equal(uint(198)))
 		})
 
-		It("returns correctly for 3 items", func() {
-			price := NewFixed(17).Price(3)
-			Expect(price).To(Equal(uint(51)))
+		It("quickchecks", func() {
+			f := func(unitPrice, numberOfItems uint) bool {
+				actual := NewFixed(unitPrice).Price(numberOfItems)
+				expectation := numberOfItems * unitPrice
+				return actual == expectation
+			}
+			Expect(quick.Check(f, quickConfig)).To(BeNil())
 		})
 	})
 })

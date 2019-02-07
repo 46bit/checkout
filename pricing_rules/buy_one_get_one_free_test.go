@@ -4,6 +4,7 @@ import (
 	. "github.com/46bit/checkout/pricing_rules"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
+	"testing/quick"
 )
 
 var _ = Describe("BuyOneGetOneFree", func() {
@@ -34,14 +35,14 @@ var _ = Describe("BuyOneGetOneFree", func() {
 			Expect(price).To(Equal(uint(14)))
 		})
 
-		It("returns correctly for 4 items", func() {
-			price := NewBuyOneGetOneFree(7).Price(4)
-			Expect(price).To(Equal(uint(14)))
-		})
-
-		It("returns correctly for 5 items", func() {
-			price := NewBuyOneGetOneFree(7).Price(5)
-			Expect(price).To(Equal(uint(21)))
+		It("quickchecks", func() {
+			f := func(unitPrice, numberOfItems uint) bool {
+				actual := NewBuyOneGetOneFree(unitPrice).Price(numberOfItems)
+				effectiveNumberOfItems := numberOfItems/2 + numberOfItems%2
+				expectation := effectiveNumberOfItems * unitPrice
+				return actual == expectation
+			}
+			Expect(quick.Check(f, quickConfig)).To(BeNil())
 		})
 	})
 })
