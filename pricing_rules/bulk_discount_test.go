@@ -15,7 +15,7 @@ var _ = Describe("BulkDiscount", func() {
 	})
 
 	Context("Price", func() {
-		var bulk_discount BulkDiscount
+		var bulk_discount *BulkDiscount
 
 		BeforeEach(func() {
 			bulk_discount = NewBulkDiscount(2, 7, 4)
