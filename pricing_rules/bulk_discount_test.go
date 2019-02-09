@@ -13,8 +13,8 @@ var _ = Describe("BulkDiscount", func() {
 
 		BeforeEach(func() {
 			bulk_discount = &BulkDiscount{
-				MinimumNumberOfItems: 2,
 				StandardPrice:        7,
+				MinimumNumberOfItems: 2,
 				DiscountedPrice:      4,
 			}
 		})
@@ -35,15 +35,15 @@ var _ = Describe("BulkDiscount", func() {
 		})
 
 		It("quickchecks", func() {
-			f := func(minimumNumberOfItems, standardPrice, discountedPrice, numberOfItems uint) bool {
+			f := func(standardPrice, minimumNumberOfItems, discountedPrice, numberOfItems uint) bool {
 				effectivePrice := standardPrice
 				if numberOfItems >= minimumNumberOfItems {
 					effectivePrice = discountedPrice
 				}
 				expectation := numberOfItems * effectivePrice
 				bd := &BulkDiscount{
-					MinimumNumberOfItems: minimumNumberOfItems,
 					StandardPrice:        standardPrice,
+					MinimumNumberOfItems: minimumNumberOfItems,
 					DiscountedPrice:      discountedPrice,
 				}
 				actual := bd.Price(numberOfItems)

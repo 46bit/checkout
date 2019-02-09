@@ -74,18 +74,18 @@ var _ = Describe("Config", func() {
 				data, err := yaml.Marshal(Config{
 					PricingRules: map[string]PricingRule{
 						"alpha": &BulkDiscount{
-							MinimumNumberOfItems: 4,
 							StandardPrice:        1100,
+							MinimumNumberOfItems: 4,
 							DiscountedPrice:      700,
 						},
 						"beta": &BulkDiscount{
-							MinimumNumberOfItems: 10,
 							StandardPrice:        15,
+							MinimumNumberOfItems: 10,
 							DiscountedPrice:      9,
 						},
 						"gamma": &BulkDiscount{
-							MinimumNumberOfItems: 7,
 							StandardPrice:        3,
+							MinimumNumberOfItems: 7,
 							DiscountedPrice:      2,
 						},
 					},
@@ -116,8 +116,8 @@ var _ = Describe("Config", func() {
 					PricingRules: map[string]PricingRule{
 						"bogof": &BuyOneGetOneFree{UnitPrice: 9},
 						"bulk": &BulkDiscount{
-							MinimumNumberOfItems: 3,
 							StandardPrice:        450,
+							MinimumNumberOfItems: 3,
 							DiscountedPrice:      399,
 						},
 						"fixed": &Fixed{UnitPrice: 11},
@@ -233,18 +233,18 @@ var _ = Describe("Config", func() {
 				Expect(config).To(Equal(Config{
 					PricingRules: map[string]PricingRule{
 						"alpha": &BulkDiscount{
-							MinimumNumberOfItems: 4,
 							StandardPrice:        1100,
+							MinimumNumberOfItems: 4,
 							DiscountedPrice:      700,
 						},
 						"beta": &BulkDiscount{
-							MinimumNumberOfItems: 10,
 							StandardPrice:        15,
+							MinimumNumberOfItems: 10,
 							DiscountedPrice:      9,
 						},
 						"gamma": &BulkDiscount{
-							MinimumNumberOfItems: 7,
 							StandardPrice:        3,
+							MinimumNumberOfItems: 7,
 							DiscountedPrice:      2,
 						},
 					},
@@ -272,8 +272,8 @@ var _ = Describe("Config", func() {
 					PricingRules: map[string]PricingRule{
 						"bogof": &BuyOneGetOneFree{UnitPrice: 9},
 						"bulk": &BulkDiscount{
-							MinimumNumberOfItems: 3,
 							StandardPrice:        450,
+							MinimumNumberOfItems: 3,
 							DiscountedPrice:      399,
 						},
 						"fixed": &Fixed{UnitPrice: 11},

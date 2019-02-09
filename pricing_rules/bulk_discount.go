@@ -7,8 +7,8 @@ import (
 )
 
 type BulkDiscount struct {
-	MinimumNumberOfItems uint `yaml:"minimum_number_of_items"`
 	StandardPrice        uint `yaml:"standard_price"`
+	MinimumNumberOfItems uint `yaml:"minimum_number_of_items"`
 	DiscountedPrice      uint `yaml:"discounted_price"`
 }
 
@@ -24,8 +24,8 @@ var _ PricingRule = new(BulkDiscount)
 
 func (r BulkDiscount) Generate(rand *rand.Rand, size int) reflect.Value {
 	return reflect.ValueOf(&BulkDiscount{
-		MinimumNumberOfItems: uint(rand.Uint32()),
 		StandardPrice:        uint(rand.Uint32()),
+		MinimumNumberOfItems: uint(rand.Uint32()),
 		DiscountedPrice:      uint(rand.Uint32()),
 	})
 }

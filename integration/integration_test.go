@@ -14,8 +14,8 @@ var _ = Describe("Checkout", func() {
 		pricingRules := map[string]pricing_rules.PricingRule{
 			"FR1": &pricing_rules.BuyOneGetOneFree{UnitPrice: 311},
 			"SR1": &pricing_rules.BulkDiscount{
-				MinimumNumberOfItems: 3,
 				StandardPrice:        500,
+				MinimumNumberOfItems: 3,
 				DiscountedPrice:      450,
 			},
 			"CF1": &pricing_rules.Fixed{UnitPrice: 1123},
