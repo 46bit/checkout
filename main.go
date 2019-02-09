@@ -55,6 +55,9 @@ func main() {
 	s := make(chan os.Signal, 1)
 	signal.Notify(s, os.Interrupt)
 	<-s
-	log.Printf("\nTotal price: %d", c.Total())
+	pricePounds := c.Total() / 100
+	pricePence := c.Total() % 100
+
+	log.Printf("Total price: £%d.%02d", pricePounds, pricePence)
 	os.Exit(1)
 }
