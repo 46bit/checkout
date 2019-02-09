@@ -10,10 +10,6 @@ type Fixed struct {
 	UnitPrice uint `yaml:"unit_price"`
 }
 
-func NewFixed(unitPrice uint) *Fixed {
-	return &Fixed{UnitPrice: unitPrice}
-}
-
 func (r *Fixed) Price(numberOfItems uint) uint {
 	return numberOfItems * r.UnitPrice
 }

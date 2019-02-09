@@ -12,14 +12,6 @@ type BulkDiscount struct {
 	DiscountedPrice      uint `yaml:"discounted_price"`
 }
 
-func NewBulkDiscount(minimumNumberOfItems, standardPrice, discountedPrice uint) *BulkDiscount {
-	return &BulkDiscount{
-		MinimumNumberOfItems: minimumNumberOfItems,
-		StandardPrice:        standardPrice,
-		DiscountedPrice:      discountedPrice,
-	}
-}
-
 func (r *BulkDiscount) Price(numberOfItems uint) uint {
 	unitPrice := r.StandardPrice
 	if numberOfItems >= r.MinimumNumberOfItems {

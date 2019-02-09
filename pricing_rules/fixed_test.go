@@ -8,31 +8,34 @@ import (
 )
 
 var _ = Describe("Fixed", func() {
-	Context("New", func() {
-		It("returns a new Fixed", func() {
-			Expect(NewFixed(42)).ToNot(BeNil())
-		})
-	})
-
 	Context("Price", func() {
+		var fixed *Fixed
+
+		BeforeEach(func() {
+			fixed = &Fixed{UnitPrice: 11}
+		})
+
 		It("returns 0 for 0 items", func() {
-			price := NewFixed(11).Price(0)
+			price := fixed.Price(0)
 			Expect(price).To(Equal(uint(0)))
 		})
 
 		It("returns correctly for 1 item", func() {
-			price := NewFixed(77).Price(1)
+			fixed.UnitPrice = 77
+			price := fixed.Price(1)
 			Expect(price).To(Equal(uint(77)))
 		})
 
 		It("returns correctly for 2 items", func() {
-			price := NewFixed(99).Price(2)
+			fixed.UnitPrice = 99
+			price := fixed.Price(2)
 			Expect(price).To(Equal(uint(198)))
 		})
 
 		It("quickchecks", func() {
 			f := func(unitPrice, numberOfItems uint) bool {
-				actual := NewFixed(unitPrice).Price(numberOfItems)
+				fixed := &Fixed{UnitPrice: unitPrice}
+				actual := fixed.Price(numberOfItems)
 				expectation := numberOfItems * unitPrice
 				return actual == expectation
 			}

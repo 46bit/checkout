@@ -12,9 +12,13 @@ var _ = Describe("Checkout", func() {
 
 	BeforeEach(func() {
 		pricingRules := map[string]pricing_rules.PricingRule{
-			"FR1": pricing_rules.NewBuyOneGetOneFree(311),
-			"SR1": pricing_rules.NewBulkDiscount(3, 500, 450),
-			"CF1": pricing_rules.NewFixed(1123),
+			"FR1": &pricing_rules.BuyOneGetOneFree{UnitPrice: 311},
+			"SR1": &pricing_rules.BulkDiscount{
+				MinimumNumberOfItems: 3,
+				StandardPrice:        500,
+				DiscountedPrice:      450,
+			},
+			"CF1": &pricing_rules.Fixed{UnitPrice: 1123},
 		}
 		c = checkout.New(pricingRules)
 	})

@@ -10,10 +10,6 @@ type BuyOneGetOneFree struct {
 	UnitPrice uint `yaml:"unit_price"`
 }
 
-func NewBuyOneGetOneFree(unitPrice uint) *BuyOneGetOneFree {
-	return &BuyOneGetOneFree{UnitPrice: unitPrice}
-}
-
 func (r *BuyOneGetOneFree) Price(numberOfItems uint) uint {
 	effectiveNumberOfItems := numberOfItems/2 + numberOfItems%2
 	return effectiveNumberOfItems * r.UnitPrice

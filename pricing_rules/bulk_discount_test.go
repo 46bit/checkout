@@ -8,17 +8,15 @@ import (
 )
 
 var _ = Describe("BulkDiscount", func() {
-	Context("New", func() {
-		It("returns a new BulkDiscount", func() {
-			Expect(NewBulkDiscount(3, 2, 1)).ToNot(BeNil())
-		})
-	})
-
 	Context("Price", func() {
 		var bulk_discount *BulkDiscount
 
 		BeforeEach(func() {
-			bulk_discount = NewBulkDiscount(2, 7, 4)
+			bulk_discount = &BulkDiscount{
+				MinimumNumberOfItems: 2,
+				StandardPrice:        7,
+				DiscountedPrice:      4,
+			}
 		})
 
 		It("returns 0 for 0 items", func() {
@@ -43,7 +41,11 @@ var _ = Describe("BulkDiscount", func() {
 					effectivePrice = discountedPrice
 				}
 				expectation := numberOfItems * effectivePrice
-				bd := NewBulkDiscount(minimumNumberOfItems, standardPrice, discountedPrice)
+				bd := &BulkDiscount{
+					MinimumNumberOfItems: minimumNumberOfItems,
+					StandardPrice:        standardPrice,
+					DiscountedPrice:      discountedPrice,
+				}
 				actual := bd.Price(numberOfItems)
 				return actual == expectation
 			}
