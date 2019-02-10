@@ -1,12 +1,13 @@
-pricing_rules:
+pricing:
   bogof:
-    rule: buy_one_get_one_free
-    unit_price: 9
+    price: 9
+    pricing_rule:
+      type: buy_one_get_one_free
   bulk:
-    rule: bulk_discount
-    standard_price: 450
-    minimum_number_of_items: 3
-    discounted_price: 399
+    price: 450
+    pricing_rule:
+      type: bulk_discount
+      order_volume: 3
+      discounted_price: 399
   fixed:
-    rule: fixed
-    unit_price: 11
+    price: 11

@@ -1,80 +1,157 @@
 package main
 
 import (
-	"bufio"
-	"flag"
-	"github.com/46bit/checkout/checkout"
-	"github.com/46bit/checkout/payment"
-	"github.com/46bit/checkout/pricing_rules"
-	"gopkg.in/yaml.v2"
-	"io/ioutil"
+	"encoding/json"
+	"fmt"
+	"github.com/46bit/circle-collision-detection/world"
 	"log"
-	"os"
-	"os/signal"
+	"math"
+	"math/rand"
+	"time"
 )
 
 func main() {
-	var pricingRules string
-	flag.StringVar(&pricingRules, "pricing-rules", "pricing-rules.yml", "Filepath of the pricing rules YAML to use")
-	var enableTakingPayments bool
-	flag.BoolVar(&enableTakingPayments, "enable-taking-payments", false, "Set to true to print payment links using GOV.UK Pay")
-	flag.Parse()
-	log.Printf("Using pricing rules from '%s'\n", pricingRules)
-	var payApiKey string
-	if enableTakingPayments {
-		payApiKey = os.Getenv("PAY_API_KEY")
-		if len(payApiKey) == 0 {
-			log.Fatal("Taking payments was enabled but the `PAY_API_KEY` environment variable was not provided")
-		}
+	leftX := rand.Float64()
+	topY := rand.Float64()
+	bounds := world.Bounds{
+		LeftX:   leftX,
+		RightX:  leftX + math.Abs(rand.Float64()),
+		TopY:    topY,
+		BottomY: topY + math.Abs(rand.Float64()),
 	}
 
-	pricingRulesYaml, err := ioutil.ReadFile(pricingRules)
-	if err != nil {
-		log.Fatal(err)
-	}
-	var config pricing_rules.Config
-	err = yaml.UnmarshalStrict([]byte(pricingRulesYaml), &config)
-	if err != nil {
-		log.Fatal(err)
-	}
+	numberOfCircles := 100000
 
-	log.Println("Available item IDs:")
-	for itemID := range config.PricingRules {
-		log.Printf("• %s", itemID)
+	start := time.Now()
+	circles := make([]world.Circle, numberOfCircles)
+	for i := 0; i < numberOfCircles; i++ {
+		circles[i] = randomCircleWithinBounds(bounds)
 	}
+	elapsed := time.Now().Sub(start)
+	log.Println(elapsed)
 
-	c := checkout.New(config.PricingRules)
-	log.Println("Type one Item ID per line to add it to your basket")
-	log.Println("Press Ctrl+C to finish and print the total")
+	// start = time.Now()
+	// numberOfIntersections := 0
+	// for i := 0; i < numberOfCircles; i++ {
+	// 	for j := 0; j < numberOfCircles; j++ {
+	// 		if i != j {
+	// 			if circles[i].Intersects(circles[j]) {
+	// 				//fmt.Printf("intersection: %d x %d\n", circles[i].ID, circles[j].ID)
+	// 				numberOfIntersections += 1
+	// 			}
+	// 		}
+	// 	}
+	// }
+	// log.Printf("%d of %d circles intersect\n", numberOfIntersections, numberOfCircles)
+	// elapsed = time.Now().Sub(start)
+	// log.Println(elapsed)
 
-	go func() {
-		scanner := bufio.NewScanner(os.Stdin)
-		for scanner.Scan() {
-			err = c.Scan(scanner.Text())
-			if err != nil {
-				log.Println(err)
+	start = time.Now()
+	quadtree := world.NewQuadtree(bounds, circles)
+	elapsed = time.Now().Sub(start)
+	log.Println(elapsed)
+	log.Printf("Circles in quadtree: %d", traverseCountCircles(quadtree))
+
+	start = time.Now()
+	n := 0
+	stack := []world.Quadtree{quadtree}
+	for len(stack) > 0 {
+		var head world.Quadtree
+		head, stack = stack[0], stack[1:]
+		if head.Subtrees != nil {
+			for i := range *head.Subtrees {
+				//log.Println(head.Subtrees[i].Bounds)
+				stack = append(stack, head.Subtrees[i])
 			}
 		}
-
-		if err := scanner.Err(); err != nil {
-			log.Println(c.Total())
-			os.Exit(1)
-		}
-	}()
-
-	s := make(chan os.Signal, 1)
-	signal.Notify(s, os.Interrupt)
-	<-s
-	pricePounds := c.Total() / 100
-	pricePence := c.Total() % 100
-
-	log.Printf("Total price: £%d.%02d", pricePounds, pricePence)
-	if enableTakingPayments {
-		nextUrl, err := payment.PaymentLink(c.Total(), "test-payment", payApiKey)
-		if err != nil {
-			log.Fatalf("Error generating a payment link: '%s'", err.Error())
-		}
-		log.Printf("Click here to pay: %s", nextUrl)
+		n += 1
 	}
-	os.Exit(1)
+	log.Println(n)
+	elapsed = time.Now().Sub(start)
+	log.Println(elapsed)
+
+	start = time.Now()
+	log.Println(traverse(quadtree))
+	elapsed = time.Now().Sub(start)
+	log.Println(elapsed)
+
+	start = time.Now()
+	log.Println(computeComputations(quadtree, []world.Circle{}))
+	elapsed = time.Now().Sub(start)
+	log.Println(elapsed)
+
+	data, err := json.MarshalIndent(quadtree, "", "  ")
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println(string(data))
+}
+
+func traverse(q world.Quadtree) int {
+	n := 1
+	if q.Subtrees != nil {
+		for i := range *q.Subtrees {
+			n += traverse(q.Subtrees[i])
+		}
+	}
+	return n
+}
+
+func traverseCountCircles(q world.Quadtree) int {
+	n := len(q.Circles)
+	if q.Subtrees != nil {
+		for i := range *q.Subtrees {
+			n += traverseCountCircles(q.Subtrees[i])
+		}
+	}
+	return n
+}
+
+func computeComputations(q world.Quadtree, parentCircles []world.Circle) int {
+	n := 0
+
+	for _, parentCircle := range parentCircles {
+		for _, circle := range q.Circles {
+			if parentCircle.Intersects(circle) {
+				//if parentCircle.Bounds().Intersects(circle.Bounds()) && parentCircle.Intersects(circle) {
+				//fmt.Printf("quadtree intersection: %d x %d\n", circle.ID, parentCircle.ID)
+				//fmt.Printf("quadtree intersection: %d x %d\n", parentCircle.ID, circle.ID)
+				n += 2
+			}
+		}
+	}
+
+	for i, circle := range q.Circles {
+		for j, circle2 := range q.Circles {
+			//if i != j && circle.Bounds().Intersects(circle2.Bounds()) && circle.Intersects(circle2) {
+			if i != j && circle.Intersects(circle2) {
+				//fmt.Printf("quadtree intersection: %d x %d\n", circle.ID, circle2.ID)
+				n += 1
+			}
+		}
+	}
+
+	if q.Subtrees != nil {
+		circles := append(parentCircles, q.Circles...)
+		for i := range *q.Subtrees {
+			n += computeComputations(q.Subtrees[i], circles)
+		}
+	}
+	return n
+}
+
+func randomCircleWithinBounds(bounds world.Bounds) world.Circle {
+	for {
+		circle := world.Circle{
+			ID: rand.Int(),
+			Centre: world.Point{
+				X: rand.Float64(),
+				Y: rand.Float64(),
+			},
+			Radius: math.Abs(rand.Float64()),
+		}
+		if bounds.Contains(circle) {
+			return circle
+		}
+	}
 }
