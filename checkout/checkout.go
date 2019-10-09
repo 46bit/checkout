@@ -2,15 +2,15 @@ package checkout
 
 import (
 	"fmt"
-	"github.com/46bit/checkout/pricing_rules"
+	"github.com/46bit/checkout/pricing"
 )
 
 type Checkout struct {
-	pricingRules map[string]pricing_rules.PricingRule
+	pricingRules map[string]pricing.PricingRule
 	scannedItems map[string]uint
 }
 
-func New(pricingRules map[string]pricing_rules.PricingRule) *Checkout {
+func New(pricingRules map[string]pricing.PricingRule) *Checkout {
 	return &Checkout{
 		pricingRules: pricingRules,
 		scannedItems: map[string]uint{},

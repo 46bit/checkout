@@ -5,7 +5,7 @@ import (
 	"flag"
 	"github.com/46bit/checkout/checkout"
 	"github.com/46bit/checkout/payment"
-	"github.com/46bit/checkout/pricing_rules"
+	"github.com/46bit/checkout/pricing"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"log"
@@ -32,7 +32,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	var config pricing_rules.Config
+	var config pricing.Config
 	err = yaml.UnmarshalStrict([]byte(pricingRulesYaml), &config)
 	if err != nil {
 		log.Fatal(err)

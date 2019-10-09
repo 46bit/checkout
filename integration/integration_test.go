@@ -2,7 +2,7 @@ package integration_test
 
 import (
 	"github.com/46bit/checkout/checkout"
-	"github.com/46bit/checkout/pricing_rules"
+	"github.com/46bit/checkout/pricing"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )
@@ -11,14 +11,14 @@ var _ = Describe("Checkout", func() {
 	var c *checkout.Checkout
 
 	BeforeEach(func() {
-		pricingRules := map[string]pricing_rules.PricingRule{
-			"FR1": &pricing_rules.BuyOneGetOneFree{UnitPrice: 311},
-			"SR1": &pricing_rules.BulkDiscount{
+		pricingRules := map[string]pricing.PricingRule{
+			"FR1": &pricing.BuyOneGetOneFree{UnitPrice: 311},
+			"SR1": &pricing.BulkDiscount{
 				StandardPrice:        500,
 				MinimumNumberOfItems: 3,
 				DiscountedPrice:      450,
 			},
-			"CF1": &pricing_rules.Fixed{UnitPrice: 1123},
+			"CF1": &pricing.Fixed{UnitPrice: 1123},
 		}
 		c = checkout.New(pricingRules)
 	})

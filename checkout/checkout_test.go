@@ -2,8 +2,8 @@ package checkout_test
 
 import (
 	"github.com/46bit/checkout/checkout"
-	"github.com/46bit/checkout/pricing_rules"
-	"github.com/46bit/checkout/pricing_rules/pricing_rulesfakes"
+	"github.com/46bit/checkout/pricing"
+	"github.com/46bit/checkout/pricing/pricingfakes"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )
@@ -12,11 +12,11 @@ var _ = Describe("Checkout", func() {
 	var c *checkout.Checkout
 
 	BeforeEach(func() {
-		cake := &pricing_rulesfakes.FakePricingRule{}
+		cake := &pricingfakes.FakePricingRule{}
 		cake.PriceCalls(func(numberOfItems uint) uint { return numberOfItems })
-		blanket := &pricing_rulesfakes.FakePricingRule{}
+		blanket := &pricingfakes.FakePricingRule{}
 		blanket.PriceCalls(func(numberOfItems uint) uint { return numberOfItems * 3 })
-		pricingRules := map[string]pricing_rules.PricingRule{
+		pricingRules := map[string]pricing.PricingRule{
 			"cake":    cake,
 			"blanket": blanket,
 		}

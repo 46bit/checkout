@@ -2,6 +2,22 @@
 
 
 [[projects]]
+  branch = "master"
+  digest = "1:290be93b5dda0fabcd6d74f713c6231f4d6073b6cea59258549e3ac0d9c663a8"
+  name = "github.com/PuerkitoBio/goquery"
+  packages = ["."]
+  pruneopts = ""
+  revision = "3dcf72e6c17f694381a21592651ca1464ded0e10"
+
+[[projects]]
+  digest = "1:e3726ad6f38f710e84c8dcd0e830014de6eaeea81f28d91ae898afecc078479a"
+  name = "github.com/andybalholm/cascadia"
+  packages = ["."]
+  pruneopts = ""
+  revision = "901648c87902174f774fac311d7f176f8647bdaa"
+  version = "v1.0.0"
+
+[[projects]]
   digest = "1:1eece6e2aa8a8f94e0461483229f0c4b0555c17e76e0e7e6b8597c2093d269f8"
   name = "github.com/onsi/ginkgo"
   packages = [
@@ -107,8 +123,10 @@
   analyzer-name = "dep"
   analyzer-version = 1
   input-imports = [
+    "github.com/PuerkitoBio/goquery",
     "github.com/onsi/ginkgo",
     "github.com/onsi/gomega",
+    "gopkg.in/yaml.v2",
   ]
   solver-name = "gps-cdcl"
   solver-version = 1
